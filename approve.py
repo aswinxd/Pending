@@ -42,7 +42,7 @@ if __name__ == "__main__":
     
     # Approve pending requests for specific chats (groups or channels)
     # Replace with your group/channel IDs
-    group_ids = [-1001234567890, -1009876543210]  # Example group/channel IDs
+    group_ids = [-1002058711408]  # Example group/channel IDs
     
     for group_id in group_ids:
         app.loop.run_until_complete(approve_pending_requests(app, group_id))
