@@ -2,9 +2,9 @@ from pyrogram import Client, filters
 from pyrogram.types import ChatJoinRequest
 
 # Replace these with your own values
-api_id = "YOUR_API_ID"
-api_hash = "YOUR_API_HASH"
-bot_token = "YOUR_BOT_TOKEN"
+api_id = "22710783"
+api_hash = "616ea341acfed51f916506c20b8a0a44"
+bot_token = "7022599037:AAGOZdH0OTRakPAhkFmAHB1KuLr-jRCKHQo"
 
 app = Client("my_bot", api_id=api_id, api_hash=api_hash, bot_token=bot_token)
 
