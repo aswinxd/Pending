@@ -17,28 +17,26 @@ if not API_ID or not API_HASH:
 User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH)
 
 async def approve_requests(client, chat_id):
-    #logging.info(f"Starting to approve join requests in chat {chat_id}")
+    logging.info(f"Starting {chat_id}")
     
     while True:
         try:
             await client.approve_all_chat_join_requests(chat_id)
-            #logging.info(f"Approved all join requests in chat {chat_id}")
+            logging.info(f"Approved {chat_id}")
             await asyncio.sleep(1) 
         except FloodWait as e:
-            return
-            #logging.warning(f"FloodWait encountered: Sleeping for {e.value} seconds")
+            
+            logging.warning(f"FloodWait {e.value} seconds")
             await asyncio.sleep(e.value)
         except BadRequest as e:
-            return
-            #logging.error(f"BadRequest error: {str(e)}")
+            logging.error(f"BadRequest error: {str(e)}")
             if "HIDE_REQUESTER_MISSING" in str(e):
                 logging.info("No pending join requests to approve. Continuing to check...")
-                await asyncio.sleep(5)  # Wait for a few seconds before checking again
+                await asyncio.sleep(1)  # Wait for a few seconds before checking again
             else:
                 break
         except Exception as e:
-            return
-            #logging.error(f"Unexpected error: {str(e)}")
+            logging.error(f"Unexpected error: {str(e)}")
             break
 
 @User.on_message(filters.command(["run", "approve"], [".", "/"]))                     
