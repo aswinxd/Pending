@@ -4,7 +4,7 @@ from os import environ
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, BadRequest
 
-#logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 # Get API ID and API hash from environment variables
 API_ID = int(environ.get("API_ID", 22710783))
