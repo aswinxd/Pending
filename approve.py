@@ -20,23 +20,23 @@ User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH)
 async def approve(client, message):
     chat_id = message.chat.id
     await message.delete()
- 
-    try:
-        while True:
-            try:
-                await client.approve_all_chat_join_requests(chat_id)
-                logging.info(f"Approved all join requests in chat {chat_id}")
-            except FloodWait as e:
-                logging.warning(f"FloodWait encountered: Sleeping for {e.value} seconds")
-                await asyncio.sleep(e.value)
-            except Exception as e:
-                logging.error(f"Unexpected error: {str(e)}")
-                break
-    except Exception as e:
-        logging.error(f"Error in outer loop: {str(e)}")
+    
+    logging.info(f"Starting to approve join requests in chat {chat_id}")
+    
+    while True:
+        try:
+            await client.approve_all_chat_join_requests(chat_id)
+            logging.info(f"Approved all join requests in chat {chat_id}")
+            await asyncio.sleep(1)  # Small delay to avoid continuous loop with high CPU usage
+        except FloodWait as e:
+            logging.warning(f"FloodWait encountered: Sleeping for {e.value} seconds")
+            await asyncio.sleep(e.value)
+        except Exception as e:
+            logging.error(f"Unexpected error: {str(e)}")
+            break
 
-    msg = await client.send_message(chat_id, "**Task Completed** ✓ **Approved Pending All Join Request**")
-    await asyncio.sleep(5)  # Wait for 5 seconds before deleting the completion message
+    msg = await client.send_message(chat_id, "done")
+    await asyncio.sleep(1)  # Wait for 5 seconds before deleting the completion message
     await msg.delete()
 
 if __name__ == "__main__":
