@@ -14,7 +14,7 @@ if not API_ID or not API_HASH:
     raise ValueError("API_ID and API_HASH must be set")
 
 # Create a new Client instance and save the session to a file
-User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH, session_name=SESSION_NAME)
+User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH)
 
 @User.on_message(filters.command(["run", "approve"], [".", "/"]))                     
 async def approve(client, message):
