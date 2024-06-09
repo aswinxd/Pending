@@ -29,10 +29,9 @@ async def approve_requests(client, chat_id):
             logging.warning(f"FloodWait {e.value} seconds")
             await asyncio.sleep(e.value)
         except BadRequest as e:
-            logging.error(f"BadRequest error: {str(e)}")
+            logging.error(f"BadRequest error")
             if "HIDE_REQUESTER_MISSING" in str(e):
-                return 
-                #logging.info("No pending join requests to approve. Continuing to check...")
+                logging.info("continue")
                 await asyncio.sleep(0.5)  # Wait for a few seconds before checking again
             else:
                 break
