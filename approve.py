@@ -2,7 +2,7 @@ import logging
 import asyncio
 from os import environ
 from pyrogram import Client, filters
-from pyrogram.errors import FloodWait
+from pyrogram.errors import FloodWait, BadRequest
 
 logging.basicConfig(level=logging.INFO)
 
