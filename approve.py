@@ -16,11 +16,7 @@ if not API_ID or not API_HASH:
 # Create a new Client instance and save the session to a file
 User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH)
 
-@User.on_message(filters.command(["run", "approve"], [".", "/"]))                     
-async def approve(client, message):
-    chat_id = message.chat.id
-    await message.delete()
-    
+async def approve_requests(client, chat_id):
     logging.info(f"Starting to approve join requests in chat {chat_id}")
     
     while True:
@@ -31,13 +27,25 @@ async def approve(client, message):
         except FloodWait as e:
             logging.warning(f"FloodWait encountered: Sleeping for {e.value} seconds")
             await asyncio.sleep(e.value)
+        except BadRequest as e:
+            logging.error(f"BadRequest error: {str(e)}")
+            if "HIDE_REQUESTER_MISSING" in str(e):
+                logging.info("No pending join requests to approve. Continuing to check...")
+                await asyncio.sleep(5)  # Wait for a few seconds before checking again
+            else:
+                break
         except Exception as e:
             logging.error(f"Unexpected error: {str(e)}")
             break
 
-    msg = await client.send_message(chat_id, "done")
-    await asyncio.sleep(1)  # Wait for 5 seconds before deleting the completion message
-    await msg.delete()
+@User.on_message(filters.command(["run", "approve"], [".", "/"]))                     
+async def approve(client, message):
+    chat_id = message.chat.id
+    await message.delete()
+    await client.send_message(chat_id, "Approval process started. Approving pending join requests...")
+
+    # Start the approval task
+    asyncio.create_task(approve_requests(client, chat_id))
 
 if __name__ == "__main__":
     logging.info("Bot started...")
