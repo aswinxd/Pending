@@ -21,21 +21,25 @@ async def approve_requests(client, chat_id):
     while True:
         try:
             await client.approve_all_chat_join_requests(chat_id)
-            logging.info(f"Approved {chat_id}")
+           # logging.info(f"Approved {chat_id}")
             await asyncio.sleep(0.5) 
         except FloodWait as e:
+            return
             
-            logging.warning(f"FloodWait {e.value} seconds")
+            #logging.warning(f"FloodWait {e.value} seconds")
             await asyncio.sleep(e.value)
         except BadRequest as e:
-            logging.error(f"BadRequest error")
+            return
+           # logging.error(f"BadRequest error")
             if "HIDE_REQUESTER_MISSING" in str(e):
-                logging.info("continue")
+               # return
+               #logging.info("continue")
                 await asyncio.sleep(0.5)  
             else:
                 break
         except Exception as e:
-            logging.error(f"Unexpected error: {str(e)}")
+            return
+            #logging.error(f"Unexpected error: {str(e)}")
             break
 
 @User.on_message(filters.command(["run", "approve"], [".", "/"]))                     
