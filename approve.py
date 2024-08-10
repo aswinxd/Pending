@@ -32,7 +32,7 @@ async def approve_requests(client, chat_id):
             return
            # logging.error(f"BadRequest error")
             if "HIDE_REQUESTER_MISSING" in str(e):
-               # return
+                return
                #logging.info("continue")
                 await asyncio.sleep(0.5)  
             else:
