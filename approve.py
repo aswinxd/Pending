@@ -40,7 +40,7 @@ async def approve_requests(client, chat_id):
                     else:
                         raise e
 
-                 await asyncio.sleep(1)  
+               #  await asyncio.sleep(1)  
 
                 try:
                     except BadRequest as e:
