@@ -43,7 +43,7 @@ async def approve_requests(client, chat_id):
                     await asyncio.sleep(1)  
 
                 try:
-                   #  await client.approve_chat_join_request(chat_id, request.user.id)
+                     await client.approve_chat_join_request(chat_id, request.user.id)
                 except BadRequest as e:
                      if "400 INPUT_USER_DEACTIVATED" in str(e):
                         logging.warning(f"Cannot approve user {request.user.id}: User is deleted ac")
@@ -53,7 +53,7 @@ async def approve_requests(client, chat_id):
                      await asyncio.sleep(1)
 
                 try:
-                  #   await client.approve_chat_join_request(chat_id, request.user.id)
+                     await client.approve_chat_join_request(chat_id, request.user.id)
                 except BadRequest as e:
                      if "400 USER_ALREADY_PARTICIPANT" in str(e):
                         logging.warning(f"Cannot approve user {request.user.id}: User is in chnl")
