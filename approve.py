@@ -14,29 +14,31 @@ if not API_ID or not API_HASH:
 
 User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH)
 
-BATCH_SIZE = 100  
+BATCH_SIZE = 100  # Approve 100 users per batch
 
 async def approve_requests(client, chat_id):
     logging.info(f"Starting approval in chat {chat_id}")
     
     while True:
         try:
-        
-            async for requests in client.get_chat_join_requests(chat_id, limit=BATCH_SIZE):
-                if not requests:
-                    logging.info("No more pending join requests.")
-                    await client.send_message(chat_id, "All pending join requests have been approved.")
-                    break
+            # Get pending join requests (limit to batch size)
+            requests = await client.get_chat_join_requests(chat_id, limit=BATCH_SIZE)
 
-                for user in requests:
-                    await client.approve_chat_join_request(chat_id, user.user.id)
-                    logging.info(f"Approved user: {user.user.id}")
+            if not requests:
+                logging.info("No more pending join requests.")
+                await client.send_message(chat_id, "All pending join requests have been approved.")
+                break
 
-                await asyncio.sleep(1) 
+            # Approve each request
+            for request in requests:
+                await client.approve_chat_join_request(chat_id, request.user.id)
+                logging.info(f"Approved user: {request.user.id}")
+
+            await asyncio.sleep(1)  # Sleep briefly to avoid hitting API limits
 
         except FloodWait as e:
             logging.warning(f"FloodWait: Sleeping for {e.value} seconds.")
-            await asyncio.sleep(e.value)
+            await asyncio.sleep(e.value)  # Wait for the FloodWait duration and then retry
         except BadRequest as e:
             logging.error(f"BadRequest error: {str(e)}")
             if "HIDE_REQUESTER_MISSING" in str(e):
