@@ -14,14 +14,14 @@ if not API_ID or not API_HASH:
 
 User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH)
 
-BATCH_SIZE = 100  # Approve 100 users per batch
+BATCH_SIZE = 100  
 
 async def approve_requests(client, chat_id):
     logging.info(f"Starting approval in chat {chat_id}")
     
     while True:
         try:
-            # Fetch pending join requests as an async generator
+          
             async for request in client.get_chat_join_requests(chat_id, limit=BATCH_SIZE):
                 if request is None:
                     logging.info("No more pending join requests.")
@@ -29,13 +29,13 @@ async def approve_requests(client, chat_id):
                     break
 
                 try:
-                    # Approve each request
+                
                     await client.approve_chat_join_request(chat_id, request.user.id)
-                    logging.info(f"Approved user: {request.user.id}")
+                  #  logging.info(f"Approved user: {request.user.id}")
                 except BadRequest as e:
                     if "USER_CHANNELS_TOO_MUCH" in str(e):
                         logging.warning(f"Cannot approve user {request.user.id}: User has joined too many channels.")
-                        # Skip this user and continue approving others
+                       
                         continue
                     else:
                         raise e
@@ -60,7 +60,7 @@ async def approve_requests(client, chat_id):
 async def approve(client, message):
     chat_id = message.chat.id
     await message.delete()
-    await client.send_message(chat_id, "Approval process started. Approving pending join requests...")
+   # await client.send_message(chat_id, "Approval process started. Approving pending join requests...")
     asyncio.create_task(approve_requests(client, chat_id))
 
 if __name__ == "__main__":
