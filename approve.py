@@ -21,19 +21,20 @@ async def approve_requests(client, chat_id):
     
     while True:
         try:
-            # Use async for to iterate through the generator of join requests
-            async for requests in client.get_chat_join_requests(chat_id, limit=BATCH_SIZE):
-                if not requests:
-                    logging.info("No more pending join requests.")
-                    await client.send_message(chat_id, "All pending join requests have been approved.")
-                    break
+            # Fetch pending join requests, this returns a list of ChatJoinRequests
+            requests = await client.get_chat_join_requests(chat_id, limit=BATCH_SIZE)
 
-                # Approve each request
-                for request in requests:
-                    await client.approve_chat_join_request(chat_id, request.user.id)
-                    logging.info(f"Approved user: {request.user.id}")
+            if not requests:
+                logging.info("No more pending join requests.")
+                await client.send_message(chat_id, "All pending join requests have been approved.")
+                break
 
-                await asyncio.sleep(1)  # Sleep briefly to avoid hitting API limits
+            # Approve each request
+            for request in requests:
+                await client.approve_chat_join_request(chat_id, request.user.id)
+                logging.info(f"Approved user: {request.user.id}")
+
+            await asyncio.sleep(1)  # Sleep briefly to avoid hitting API limits
 
         except FloodWait as e:
             logging.warning(f"FloodWait: Sleeping for {e.value} seconds.")
