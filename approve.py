@@ -14,32 +14,33 @@ if not API_ID or not API_HASH:
 
 User = Client(name="AcceptUser", api_id=API_ID, api_hash=API_HASH)
 
-BATCH_SIZE = 100 
+BATCH_SIZE = 100  
 
 async def approve_requests(client, chat_id):
     logging.info(f"Starting approval in chat {chat_id}")
     
     while True:
         try:
-            requests = await client.get_chat_join_requests(chat_id, limit=BATCH_SIZE)
-            
-            if not requests:
-                logging.info("No more pending join requests.")
-                await client.send_message(chat_id, "All pending join requests have been approved.")
-                break
-            for user in requests:
-                await client.approve_chat_join_request(chat_id, user.user.id)
-               # logging.info(f"Approved user: {user.user.id}")
+        
+            async for requests in client.get_chat_join_requests(chat_id, limit=BATCH_SIZE):
+                if not requests:
+                    logging.info("No more pending join requests.")
+                    await client.send_message(chat_id, "All pending join requests have been approved.")
+                    break
 
-            await asyncio.sleep(1) 
+                for user in requests:
+                    await client.approve_chat_join_request(chat_id, user.user.id)
+                    logging.info(f"Approved user: {user.user.id}")
+
+                await asyncio.sleep(1) 
 
         except FloodWait as e:
             logging.warning(f"FloodWait: Sleeping for {e.value} seconds.")
-            await asyncio.sleep(e.value) 
+            await asyncio.sleep(e.value)
         except BadRequest as e:
             logging.error(f"BadRequest error: {str(e)}")
             if "HIDE_REQUESTER_MISSING" in str(e):
-               # logging.info("HIDE_REQUESTER_MISSING, stopping.")
+                logging.info("HIDE_REQUESTER_MISSING, stopping.")
                 break
             else:
                 break
@@ -51,7 +52,7 @@ async def approve_requests(client, chat_id):
 async def approve(client, message):
     chat_id = message.chat.id
     await message.delete()
-#    await client.send_message(chat_id, "Approval process started. Approving pending join requests...")
+    await client.send_message(chat_id, "Approval process started. Approving pending join requests...")
     asyncio.create_task(approve_requests(client, chat_id))
 
 if __name__ == "__main__":
