@@ -28,9 +28,17 @@ async def approve_requests(client, chat_id):
                     await client.send_message(chat_id, "All pending join requests have been approved.")
                     break
 
-                # Approve each request
-                await client.approve_chat_join_request(chat_id, request.user.id)
-                logging.info(f"Approved user: {request.user.id}")
+                try:
+                    # Approve each request
+                    await client.approve_chat_join_request(chat_id, request.user.id)
+                    logging.info(f"Approved user: {request.user.id}")
+                except BadRequest as e:
+                    if "USER_CHANNELS_TOO_MUCH" in str(e):
+                        logging.warning(f"Cannot approve user {request.user.id}: User has joined too many channels.")
+                        # Skip this user and continue approving others
+                        continue
+                    else:
+                        raise e
 
             await asyncio.sleep(1)  # Sleep briefly to avoid hitting API limits
 
