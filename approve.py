@@ -21,16 +21,14 @@ async def approve_requests(client, chat_id):
     
     while True:
         try:
-            # Fetch pending join requests, this returns a list of ChatJoinRequests
-            requests = await client.get_chat_join_requests(chat_id, limit=BATCH_SIZE)
+            # Fetch pending join requests as an async generator
+            async for request in client.get_chat_join_requests(chat_id, limit=BATCH_SIZE):
+                if request is None:
+                    logging.info("No more pending join requests.")
+                    await client.send_message(chat_id, "All pending join requests have been approved.")
+                    break
 
-            if not requests:
-                logging.info("No more pending join requests.")
-                await client.send_message(chat_id, "All pending join requests have been approved.")
-                break
-
-            # Approve each request
-            for request in requests:
+                # Approve each request
                 await client.approve_chat_join_request(chat_id, request.user.id)
                 logging.info(f"Approved user: {request.user.id}")
 
