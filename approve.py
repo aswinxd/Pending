@@ -48,7 +48,7 @@ async def approve_requests(client, chat_id):
                      if "400 INPUT_USER_DEACTIVATED" in str(e):
                         logging.warning(f"Cannot approve user {request.user.id}: User is deleted ac")
                         continue
-                    else:
+                     else:
                         raise e
 
                  await asyncio.sleep(1)  
