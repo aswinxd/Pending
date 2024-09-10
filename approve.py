@@ -50,8 +50,7 @@ async def approve_requests(client, chat_id):
                         continue
                      else:
                         raise e
-
-                 await asyncio.sleep(1)  
+                     await asyncio.sleep(1)  
 
                    
     
