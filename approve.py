@@ -40,11 +40,25 @@ async def approve_requests(client, chat_id):
                     else:
                         raise e
 
-            await asyncio.sleep(1)  # Sleep briefly to avoid hitting API limits
+                 await asyncio.sleep(1)  
+
+                try:
+                    except BadRequest as e:
+                    if "400 INPUT_USER_DEACTIVATED" in str(e):
+                        logging.warning(f"Cannot approve user {request.user.id}: User is deleted ac")
+                        continue
+                    else:
+                        raise e
+
+                 await asyncio.sleep(1)  
+
+    
+
+             
 
         except FloodWait as e:
             logging.warning(f"FloodWait: Sleeping for {e.value} seconds.")
-            await asyncio.sleep(e.value)  # Wait for the FloodWait duration and then retry
+            await asyncio.sleep(e.value)  
         except BadRequest as e:
             logging.error(f"BadRequest error: {str(e)}")
             if "HIDE_REQUESTER_MISSING" in str(e):
