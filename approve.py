@@ -35,6 +35,13 @@ async def approve_requests(client, chat_id):
                 except BadRequest as e:
                     if "USER_CHANNELS_TOO_MUCH" in str(e):
                         logging.warning(f"Cannot approve user {request.user.id}: User has joined too many channels.")
+                        continue
+                    elif "USER_DELETED" in str(e):
+                        logging.warning(f"Cannot approve user {request.user.id}: User account is deleted.")
+
+                        continue
+                    else:
+                        raise e
                        
                         continue
                     else:
