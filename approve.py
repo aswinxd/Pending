@@ -42,7 +42,7 @@ async def approve_requests(client, chat_id):
 
                     await asyncio.sleep(1)  
 
-                try:
+              '''  try:
                      await client.approve_chat_join_request(chat_id, request.user.id)
                 except BadRequest as e:
                      if "400 INPUT_USER_DEACTIVATED" in str(e):
@@ -60,7 +60,7 @@ async def approve_requests(client, chat_id):
                         continue
                      else:
                         raise e
-                     await asyncio.sleep(1) 
+                     await asyncio.sleep(1) '''
 
                    
     
